@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "projects": {
+    "super-delux": {
+      "root": "packages/super-delux",
+      "targets": {
+        "build": {
+          "builder": "@bgotink/atelier:execute",
+          "options": {
+            "package": "@yarnpkg/builder",
+            "arguments": ["build", "plugin"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@bgotink/atelier": "0.2.1",
+    "@typescript-eslint/eslint-plugin": "4.14.0",
+    "@typescript-eslint/parser": "4.14.0",
+    "@yarnpkg/builder": "2.1.3",
+    "@yarnpkg/pnpify": "2.4.0",
+    "eslint": "7.18.0",
+    "eslint-import-resolver-node": "0.3.4",
+    "eslint-plugin-import": "2.22.1",
+    "husky": "^4.3.8",
+    "prettier": "2.2.1",
+    "pretty-quick": "^3.1.0",
+    "typescript": "4.1.3"
+  }
+}
