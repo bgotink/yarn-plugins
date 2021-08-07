@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@bgotink/atelier": "0.2.1",
+    "@snuggery/snuggery": "0.3.0",
     "@typescript-eslint/eslint-plugin": "4.14.0",
     "@typescript-eslint/parser": "4.14.0",
     "@yarnpkg/builder": "2.1.3",

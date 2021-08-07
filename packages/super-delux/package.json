@@ -2,7 +2,7 @@
   "name": "@yarnpkg/plugin-super-delux",
   "main": "src/index.ts",
   "scripts": {
-    "build": "run -T ai build"
+    "build": "run -T sn build"
   },
   "peerDependencies": {
     "@yarnpkg/cli": "^2.4.0",

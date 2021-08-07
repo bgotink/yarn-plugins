@@ -5,7 +5,7 @@
       "root": "packages/bucket",
       "targets": {
         "build": {
-          "builder": "@bgotink/atelier:execute",
+          "builder": "@snuggery/snuggery:execute",
           "options": {
             "package": "@yarnpkg/builder",
             "arguments": ["build", "plugin"]
@@ -17,7 +17,7 @@
       "root": "packages/super-delux",
       "targets": {
         "build": {
-          "builder": "@bgotink/atelier:execute",
+          "builder": "@snuggery/snuggery:execute",
           "options": {
             "package": "@yarnpkg/builder",
             "arguments": ["build", "plugin"]
