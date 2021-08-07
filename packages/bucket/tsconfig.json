@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+
+    "target": "es2019",
+    "lib": ["ES2020"],
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": false
+  },
+  "files": ["src/index.ts"],
+  "include": ["src/**/*.ts"]
+}

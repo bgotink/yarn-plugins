@@ -973,6 +973,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yarnpkg/plugin-bucket@workspace:packages/bucket":
+  version: 0.0.0-use.local
+  resolution: "@yarnpkg/plugin-bucket@workspace:packages/bucket"
+  dependencies:
+    "@rollup/plugin-commonjs": ^17.0.0
+    "@rollup/plugin-node-resolve": ^11.1.0
+    "@yarnpkg/cli": 2.4.0
+    "@yarnpkg/core": 2.4.0
+    "@yarnpkg/fslib": 2.4.0
+    "@yarnpkg/libzip": ^2.2.1
+    "@yarnpkg/plugin-pack": 2.2.3
+    clipanion: 2.6.2
+    rollup: ^2.36.2
+    rollup-plugin-terser: ^7.0.2
+  peerDependencies:
+    "@yarnpkg/cli": ^2.4.0
+    "@yarnpkg/core": ^2.4.0
+    "@yarnpkg/fslib": ^2.4.0
+    "@yarnpkg/plugin-pack": ^2.2.3
+    clipanion: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
 "@yarnpkg/plugin-compat@npm:^2.2.0":
   version: 2.2.0
   resolution: "@yarnpkg/plugin-compat@npm:2.2.0"
@@ -1155,7 +1178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/plugin-pack@npm:^2.2.3":
+"@yarnpkg/plugin-pack@npm:2.2.3, @yarnpkg/plugin-pack@npm:^2.2.3":
   version: 2.2.3
   resolution: "@yarnpkg/plugin-pack@npm:2.2.3"
   dependencies:
