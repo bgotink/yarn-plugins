@@ -68,9 +68,10 @@ export function resolveDescriptor(
   };
 }
 
-function parseDescriptor(
-  descriptor: Descriptor,
-): {bucketName: string; modifier: string | null} {
+function parseDescriptor(descriptor: Descriptor): {
+  bucketName: string;
+  modifier: string | null;
+} {
   const {selector} = structUtils.parseRange(descriptor.range);
 
   let bucketName = selector;

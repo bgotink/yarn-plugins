@@ -10,42 +10,37 @@ import {
   ZipFS,
 } from '@yarnpkg/fslib';
 import {getLibzipPromise} from '@yarnpkg/libzip';
-import {Command, Usage} from 'clipanion';
+import {Option, Usage} from 'clipanion';
 import {brotliDecompressSync} from 'zlib';
 
 import {hook} from '../../hook';
 
 export class CreateYarCommand extends BaseCommand {
-  @Command.String('--output,-o', {
+  static paths = [['sdlx', 'create-yar']];
+
+  output = Option.String('--output,-o', 'sdlx.sh', {
     description: 'Path to the self-unpacking script file to create',
-  })
-  output = 'sdlx.sh';
-
-  @Command.Boolean('-q,--quiet', {
-    description:
-      'Only report critical errors instead of printing the full install logs',
-  })
-  quiet = false;
-
-  @Command.Boolean('--include-cache', {
-    description: 'Include the cache in the output script',
-  })
-  includeCache = false;
-
-  @Command.Array('--package,-p')
-  pkgs: string[] = [];
-
-  @Command.String()
-  command!: string;
-
-  @Command.Proxy()
-  args: string[] = [];
-
-  static usage: Usage = Command.Usage({
-    description: 'Create a runnable yarn archive',
   });
 
-  @Command.Path('sdlx', 'create-yar')
+  quiet = Option.Boolean('-q,--quiet', false, {
+    description:
+      'Only report critical errors instead of printing the full install logs',
+  });
+
+  includeCache = Option.Boolean('--include-cache', false, {
+    description: 'Include the cache in the output script',
+  });
+
+  pkgs = Option.Array('--package,-p', []);
+
+  command = Option.String();
+
+  args = Option.Proxy();
+
+  static usage: Usage = {
+    description: 'Create a runnable yarn archive',
+  };
+
   async execute(): Promise<number | void> {
     // Disable telemetry to prevent each `dlx` call from counting as a project
     Configuration.telemetry = null;

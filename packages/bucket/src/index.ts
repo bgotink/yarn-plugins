@@ -8,7 +8,6 @@ const plugin: Plugin<PackHooks> = {
   hooks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     beforeWorkspacePacking(workspace: Workspace, rawManifest: any): void {
-      console.log('beforeWorkspacePacking');
       for (const dependencyType of ['dependencies', 'devDependencies']) {
         for (const descriptor of workspace.manifest
           .getForScope(dependencyType)

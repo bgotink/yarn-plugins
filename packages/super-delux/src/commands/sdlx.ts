@@ -1,27 +1,25 @@
 import {BaseCommand, WorkspaceRequiredError} from '@yarnpkg/cli';
 import {Configuration, Project, scriptUtils, structUtils} from '@yarnpkg/core';
 import {NativePath, Filename, ppath, xfs, npath} from '@yarnpkg/fslib';
-import {Command, Usage} from 'clipanion';
+import {Option, Usage} from 'clipanion';
 
 export default class SdlxByPackagesCommand extends BaseCommand {
-  @Command.Array('-p,--package', {
-    description: 'The package to run the provided command from',
-  })
-  pkg?: string[];
+  static paths = [['sldx']];
 
-  @Command.Boolean('-q,--quiet', {
+  pkg = Option.Array('-p,--package', {
+    description: 'The package to run the provided command from',
+  });
+
+  quiet = Option.Boolean('-q,--quiet', false, {
     description:
       'Only report critical errors instead of printing the full install logs',
-  })
-  quiet = false;
+  });
 
-  @Command.String()
-  command!: string;
+  command = Option.String();
 
-  @Command.Proxy()
-  args: Array<string> = [];
+  args = Option.Proxy();
 
-  static usage: Usage = Command.Usage({
+  static usage: Usage = {
     description: 'run a package in a temporary environment',
     details: `
       This command will install a package within a temporary environment, and run its binary script if it contains any. The binary will run within the current cwd.
@@ -36,9 +34,8 @@ export default class SdlxByPackagesCommand extends BaseCommand {
         'yarn sdlx create-react-app ./my-app',
       ],
     ],
-  });
+  };
 
-  @Command.Path('sdlx')
   async execute(): Promise<number> {
     // Disable telemetry to prevent each `dlx` call from counting as a project
     Configuration.telemetry = null;
@@ -70,7 +67,7 @@ export default class SdlxByPackagesCommand extends BaseCommand {
           };
 
           if (Array.isArray(current.plugins)) {
-            nextConfiguration.plugins = current.plugins.map((plugin: any) => {
+            nextConfiguration.plugins = current.plugins.map(plugin => {
               const sourcePath: NativePath =
                 typeof plugin === 'string' ? plugin : plugin.path;
 

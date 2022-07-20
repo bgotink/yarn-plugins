@@ -7,13 +7,13 @@ import {
   ThrowReport,
 } from '@yarnpkg/core';
 import {npath, PortablePath, xfs} from '@yarnpkg/fslib';
-import {Command} from 'clipanion';
+import {Option} from 'clipanion';
 
 export class RunYarCommand extends BaseCommand {
-  @Command.Proxy()
-  args: string[] = [];
+  static paths = [['sdlx', 'run-yar']];
 
-  @Command.Path('sdlx', 'run-yar')
+  args = Option.Proxy();
+
   async execute(): Promise<number | void> {
     // Disable telemetry to prevent each `dlx` call from counting as a project
     Configuration.telemetry = null;

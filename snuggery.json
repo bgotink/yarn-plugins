@@ -1,6 +1,18 @@
 {
   "version": 1,
   "projects": {
+    "all": {
+      "root": ".",
+      "targets": {
+        "build": {
+          "builder": "@snuggery/snuggery:glob",
+          "options": {
+            "include": "*"
+          }
+        }
+      }
+    },
+
     "bucket": {
       "root": "packages/bucket",
       "targets": {

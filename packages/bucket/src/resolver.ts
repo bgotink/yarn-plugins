@@ -63,7 +63,7 @@ export class BucketResolver implements Resolver {
     );
   }
 
-  async resolve(locator: Locator, opts: ResolveOptions): Promise<Package> {
+  async resolve(): Promise<Package> {
     throw new Error(
       "Assertion: locators shouldn't be handled by bucket: resolver",
     );
