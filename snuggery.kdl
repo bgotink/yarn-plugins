@@ -1,0 +1,25 @@
+version 0
+
+project "all" root="." {
+  target "build" builder="@snuggery/snuggery:glob" {
+    options include="*"
+  }
+}
+
+project "bucket" root="packages/bucket" {
+  target "build" builder="@snuggery/snuggery:execute" {
+    options {
+      package "@yarnpkg/builder"
+      arguments "build" "plugin"
+    }
+  }
+}
+
+project "super-delux" root="packages/super-delux" {
+  target "build" builder="@snuggery/snuggery:execute" {
+    options {
+      package "@yarnpkg/builder"
+      arguments "build" "plugin"
+    }
+  }
+}
