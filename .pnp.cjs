@@ -25,6 +25,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "reference": "workspace:packages/bucket"\
       },\
       {\
+        "name": "@yarnpkg/plugin-publish-extra",\
+        "reference": "workspace:packages/publish-extra"\
+      },\
+      {\
         "name": "@yarnpkg/plugin-super-delux",\
         "reference": "workspace:packages/super-delux"\
       }\
@@ -33,6 +37,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
       ["@yarnpkg/plugin-bucket", ["workspace:packages/bucket"]],\
+      ["@yarnpkg/plugin-publish-extra", ["workspace:packages/publish-extra"]],\
       ["@yarnpkg/plugin-super-delux", ["workspace:packages/super-delux"]],\
       ["root-workspace-0b6124", ["workspace:."]]\
     ],\
@@ -1364,6 +1369,22 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "@yarnpkg/core"\
           ],\
           "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@yarnpkg/plugin-publish-extra", [\
+        ["workspace:packages/publish-extra", {\
+          "packageLocation": "./packages/publish-extra/",\
+          "packageDependencies": [\
+            ["@yarnpkg/plugin-publish-extra", "workspace:packages/publish-extra"],\
+            ["@yarnpkg/cli", "virtual:d40ba5d4ebba67f7e6c606a481b04161cf8100cd472b6e44a51622053337f3ef10da1583ecdd114ba86b5d01c78bc51076df27f565c408a0629cee87a79f8eca#npm:3.2.1"],\
+            ["@yarnpkg/core", "npm:3.2.2"],\
+            ["@yarnpkg/fslib", "npm:2.6.2"],\
+            ["@yarnpkg/libzip", "npm:2.2.4"],\
+            ["@yarnpkg/plugin-npm", "virtual:4f79417ff2b5271ecf9900157b4384e847260ef645801ea4b6e01a6007d5b25e9238e0ec5d8e00c88d3b478bf0de5133cdc55ebe8cd7e333f58725e7440f1b66#npm:2.7.1"],\
+            ["@yarnpkg/plugin-pack", "virtual:4f79417ff2b5271ecf9900157b4384e847260ef645801ea4b6e01a6007d5b25e9238e0ec5d8e00c88d3b478bf0de5133cdc55ebe8cd7e333f58725e7440f1b66#npm:3.1.2"],\
+            ["clipanion", "virtual:eb5cfe2156d68d5ba3003cbe1d4fdfa3b6baeba4416e7ffb26738baf4df2a2e84ef987f4eb039ae7297d6d2f771ce51703b7ebb43d848a423a5d3ffb19bb1f9b#npm:3.2.0-rc.11"]\
+          ],\
+          "linkType": "SOFT"\
         }]\
       ]],\
       ["@yarnpkg/plugin-stage", [\
