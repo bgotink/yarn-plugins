@@ -7,17 +7,18 @@
     "postinstall": "is-ci || husky install"
   },
   "devDependencies": {
-    "@snuggery/snuggery": "0.8.0",
+    "@snuggery/snuggery": "0.9.0",
     "@typescript-eslint/eslint-plugin": "5.30.7",
     "@typescript-eslint/parser": "5.30.7",
-    "@yarnpkg/builder": "3.2.2",
+    "@yarnpkg/builder": "4.0.0-rc.33",
     "eslint": "8.20.0",
     "eslint-import-resolver-node": "0.3.6",
     "eslint-plugin-import": "2.26.0",
     "husky": "8.0.1",
     "is-ci": "3.0.1",
-    "prettier": "2.7.1",
+    "prettier": "2.8.1",
     "pretty-quick": "3.1.3",
-    "typescript": "4.7.4"
-  }
+    "typescript": "4.9.4"
+  },
+  "packageManager": "yarn@4.0.0-rc.33"
 }
