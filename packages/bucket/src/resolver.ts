@@ -32,7 +32,7 @@ export class BucketResolver implements Resolver {
   getResolutionDependencies(
     descriptor: Descriptor,
     opts: MinimalResolveOptions,
-  ): Descriptor[] {
+  ): Record<string, Descriptor> {
     return opts.resolver.getResolutionDependencies(
       resolveDescriptor(descriptor, opts).descriptor,
       opts,
@@ -41,7 +41,7 @@ export class BucketResolver implements Resolver {
 
   async getCandidates(
     descriptor: Descriptor,
-    dependencies: Map<DescriptorHash, Package>,
+    dependencies: Record<string, Package>,
     opts: ResolveOptions,
   ): Promise<Locator[]> {
     return opts.resolver.getCandidates(
@@ -53,12 +53,17 @@ export class BucketResolver implements Resolver {
 
   getSatisfying(
     descriptor: Descriptor,
-    references: Array<string>,
+    dependencies: Record<string, Package>,
+    locators: Locator[],
     opts: ResolveOptions,
-  ): Promise<Array<Locator> | null> {
+  ): Promise<{
+    locators: Locator[];
+    sorted: boolean;
+  }> {
     return opts.resolver.getSatisfying(
       resolveDescriptor(descriptor, opts).descriptor,
-      references,
+      dependencies,
+      locators,
       opts,
     );
   }

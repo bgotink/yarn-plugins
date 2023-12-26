@@ -82,7 +82,7 @@ export default class PackCommand extends BaseCommand {
     const target = ppath.resolve(
       this.context.cwd,
       typeof out !== `undefined`
-        ? interpolateOutputName(out, {workspace})
+        ? interpolateOutputName(out, workspace)
         : (`package.tgz` as Filename),
     );
 
@@ -129,10 +129,7 @@ export default class PackCommand extends BaseCommand {
   }
 }
 
-function interpolateOutputName(
-  name: string,
-  {workspace}: {workspace: Workspace},
-) {
+function interpolateOutputName(name: string, workspace: Workspace) {
   const interpolated = name
     .replace(`%s`, prettyWorkspaceIdent(workspace))
     .replace(`%v`, prettyWorkspaceVersion(workspace));

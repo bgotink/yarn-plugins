@@ -5,18 +5,17 @@
     "build": "run -T sn build"
   },
   "peerDependencies": {
-    "@yarnpkg/cli": "^4.0.0-rc.33",
-    "@yarnpkg/core": "^4.0.0-rc.33",
-    "@yarnpkg/fslib": "^3.0.0-rc.33",
-    "clipanion": "^3.2.0-rc.14"
+    "@yarnpkg/cli": "^4.0.2",
+    "@yarnpkg/core": "^4.0.2",
+    "@yarnpkg/fslib": "^3.0.1",
+    "clipanion": "^4.0.0-rc.2"
   },
   "devDependencies": {
-    "@yarnpkg/cli": "4.0.0-rc.33",
-    "@yarnpkg/core": "4.0.0-rc.33",
-    "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.15",
-    "@yarnpkg/fslib": "3.0.0-rc.33",
-    "@yarnpkg/libzip": "3.0.0-rc.33",
-    "clipanion": "3.2.0-rc.14",
-    "esbuild": "npm:esbuild-wasm@^0.11.20"
+    "@yarnpkg/cli": "^4.0.2",
+    "@yarnpkg/core": "^4.0.2",
+    "@yarnpkg/fslib": "^3.0.1",
+    "@yarnpkg/libzip": "^3.0.0",
+    "clipanion": "^4.0.0-rc.2",
+    "esbuild": "npm:esbuild-wasm@^0.17.0"
   }
 }
