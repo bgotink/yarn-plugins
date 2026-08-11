@@ -1,0 +1,15 @@
+{
+	"name": "@yarnpkg/plugin-clean-publish",
+	"private": true,
+	"scripts": {
+		"build": "builder build plugin "
+	},
+	"dependencies": {
+		"@yarnpkg/cli": "^4.18.0",
+		"@yarnpkg/core": "^4.9.1",
+		"@yarnpkg/plugin-pack": "^4.0.5"
+	},
+	"devDependencies": {
+		"@yarnpkg/builder": "^4.2.4"
+	}
+}

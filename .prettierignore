@@ -1,5 +1,1 @@
-.yarn
-.pnp.*
-
-/packages/*/bin
-*.min.js
+packages/*/bundles
