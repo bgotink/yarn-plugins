@@ -260,7 +260,7 @@ export function extractAssetDependencies(
 			architecture = "x64";
 		} else if (/(?:\b|_)(?:ia32|x86|i[3-9]86|386)(?:\b|_)/.test(asset.name)) {
 			architecture = "ia32";
-		} else if (/(?:\b|_)(?:aarm64|aarch64)(?:\b|_)/.test(asset.name)) {
+		} else if (/(?:\b|_)(?:arm64|aarch64)(?:\b|_)/.test(asset.name)) {
 			architecture = "arm64";
 		} else if (/(?:\b|_)(?:arm|armhf|armv[6-9](hf)?)(?:\b|_)/.test(asset.name)) {
 			architecture = "arm";
