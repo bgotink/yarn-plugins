@@ -8,10 +8,12 @@ import {
 	type Configuration,
 	type IdentHash,
 	type Project,
+	type Descriptor,
+	nodeUtils,
 } from "@yarnpkg/core";
 import {type Filename, type PortablePath, ppath, xfs} from "@yarnpkg/fslib";
 
-import {PROTOCOL} from "./types.js";
+import {PROTOCOL, PROTOCOL_INTERNAL} from "./types.js";
 
 export type Options = httpUtils.Options & {
 	cache?: Cache;
@@ -154,7 +156,7 @@ async function loadRepoReleaseMetadataFromNetwork(
  */
 export async function getRepoMetadata(
 	ident: Ident,
-	{cache, project}: {cache?: Cache; project: Project},
+	{project}: {project: Project},
 ): Promise<RepoReleaseMetadata> {
 	const {configuration} = project;
 
@@ -169,32 +171,6 @@ export async function getRepoMetadata(
 	// since most likely the user is trying to validate the metadata using hardened mode.
 	if (!project.lockfileNeedsRefresh) {
 		cached = await loadRepoReleaseMetadataFromDisk(ident, cachedPath);
-
-		// If in offline mode, we change the metadata to pretend that the only versions available
-		// on the registry are the ones currently stored in our cache. This is to avoid the resolver
-		// to try to resolve to a version that we wouldn't be able to download.
-		if (cached && configuration.get(`enableOfflineMode`)) {
-			const copy = structuredClone(cached.metadata);
-
-			if (cache) {
-				copy.releases = copy.releases.filter((release) => {
-					const locator = structUtils.makeLocator(
-						ident,
-						structUtils.makeRange({
-							protocol: PROTOCOL,
-							selector: release.tag_name,
-							source: null,
-							params: {id: String(release.id)},
-						}),
-					);
-					const mirrorPath = cache.getLocatorMirrorPath(locator);
-
-					return mirrorPath && xfs.existsSync(mirrorPath);
-				});
-			}
-
-			return copy;
-		}
 	}
 
 	return (
@@ -210,9 +186,9 @@ export async function getReleaseMetadata(
 	ident: Ident,
 	id: number | null,
 	tag_name: string,
-	{cache, project}: {cache?: Cache; project: Project},
+	{project}: {project: Project},
 ): Promise<ReleaseMetadata> {
-	const {releases} = await getRepoMetadata(ident, {cache, project});
+	const {releases} = await getRepoMetadata(ident, {project});
 
 	const release = id
 		? releases.find((release) => release.id === id)
@@ -225,15 +201,22 @@ export async function getReleaseMetadata(
 	return release;
 }
 
-export async function getReleaseAsset(ident: Ident, id: number, { project }: { project: Project}) {
-	const {browser_download_url, content_type} = await httpUtils.get(
+export async function getReleaseAsset(
+	ident: Ident,
+	id: number,
+	{project}: {project: Project},
+) {
+	const {browser_download_url, content_type} = (await httpUtils.get(
 		`https://api.github.com/repos/${ident.scope}/${ident.name}/releases/assets/${id}`,
-		{configuration: project.configuration, jsonResponse: true}
-	) as { browser_download_url: string; content_type: string | null; }
+		{configuration: project.configuration, jsonResponse: true},
+	)) as {browser_download_url: string; content_type: string | null};
 
-	const content = await httpUtils.get(browser_download_url, { configuration: project.configuration, jsonResponse: false }) as Buffer;
+	const content = (await httpUtils.get(browser_download_url, {
+		configuration: project.configuration,
+		jsonResponse: false,
+	})) as Buffer;
 
-	return { content, content_type };
+	return {content, content_type};
 }
 
 interface CachedMetadata {
@@ -313,4 +296,131 @@ function getMetadataFolder(configuration: Configuration) {
 async function getAuthenticationHeader(configuration: Configuration) {
 	// TODO support github token
 	return null;
+}
+
+type Libc = "glibc" | "musl";
+
+export function extractAssetDependencies(
+	ident: Ident,
+	release: ReleaseMetadata,
+	params: any,
+): [string, Descriptor, NodeJS.Platform, NodeJS.Architecture, Libc | null][] {
+	const dependencies: [
+		string,
+		Descriptor,
+		NodeJS.Platform,
+		NodeJS.Architecture,
+		Libc | null,
+	][] = [];
+	const linuxPlatforms = new Map<NodeJS.Architecture, Set<Libc | null>>();
+
+	for (const asset of release.assets) {
+		let strip_components = params?.strip_components;
+		switch (asset.content_type) {
+			case "application/gzip":
+				if (!asset.name.endsWith(".tar.gz")) {
+					continue;
+				}
+			// fall through
+			case "application/x-gtar":
+				strip_components = params?.strip_components_tar ?? strip_components;
+				break;
+			case "application/zip":
+				strip_components = params?.strip_components_zip ?? strip_components;
+				break;
+			default:
+				continue;
+		}
+
+		let platform: NodeJS.Platform;
+		if (/(?:\b|_)(?:apple|darwin)(?:\b|_)/i.test(asset.name)) {
+			platform = "darwin";
+		} else if (/(?:\b|_)(?:linux)(?:\b|_)/i.test(asset.name)) {
+			platform = "linux";
+		} else if (/(?:\b|_)(?:windows)(?:\b|_)/i.test(asset.name)) {
+			platform = "win32";
+		} else {
+			continue;
+		}
+
+		let architecture: NodeJS.Architecture;
+		if (/(?:\b|_)(?:x86_64|x64|amd64)(?:\b|_)/.test(asset.name)) {
+			architecture = "x64";
+		} else if (/(?:\b|_)(?:ia32|x86|i[3-9]86|386)(?:\b|_)/.test(asset.name)) {
+			architecture = "ia32";
+		} else if (/(?:\b|_)(?:arm64|aarch64)(?:\b|_)/.test(asset.name)) {
+			architecture = "arm64";
+		} else if (
+			/(?:\b|_)(?:arm|armhf|armv[6-9](hf)?)(?:\b|_)/.test(asset.name)
+		) {
+			architecture = "arm";
+		} else {
+			continue;
+		}
+
+		let libc: Libc | null = null;
+		if (platform === "linux") {
+			if (/(?:\b|_)(?:musl)(?:\b|_)/.test(asset.name)) {
+				libc = "musl";
+			} else if (/(?:\b|_)(?:gnu|glibc)(?:\b|_)/.test(asset.name)) {
+				libc = "glibc";
+			}
+
+			miscUtils.getSetWithDefault(linuxPlatforms, architecture).add(libc);
+		}
+
+		let name = `@${ident.scope}/${ident.name}-${platform}-${architecture}`;
+		if (libc) {
+			name += `-${libc}`;
+		}
+
+		const range = structUtils.makeRange({
+			protocol: PROTOCOL_INTERNAL,
+			selector: release.tag_name,
+			source: null,
+			params: {
+				id: String(asset.id),
+				binary: params.binary ?? ident.name,
+				platform,
+				architecture,
+				...(libc ? {libc} : undefined),
+				...(strip_components ? {strip_components} : undefined),
+			},
+		});
+
+		dependencies.push([
+			name,
+			structUtils.makeDescriptor(structUtils.parseIdent(name), range),
+			platform,
+			architecture,
+			libc,
+		]);
+	}
+
+	for (const [architecture, libcs] of linuxPlatforms) {
+		if (libcs.size === 1 && libcs.has("musl")) {
+			// only one libc is supported: musl
+			// -> this probably means it's a binary with musl libc statically linked
+			//    which means it should also work on platforms with glibc, so we can
+			//    drop the libc requirement
+			const dependency = dependencies.find(
+				(dep) =>
+					dep[2] === "linux" && dep[3] === architecture && dep[4] === "musl",
+			)!;
+			const range = structUtils.parseRange(dependency[1].range);
+
+			delete range.params!.libc;
+
+			dependency[1] = structUtils.makeDescriptor(
+				structUtils.makeIdent(
+					dependency[1].scope,
+					dependency[1].name.slice(0, -5 /* "-musl".length */),
+				),
+				structUtils.makeRange(range),
+			);
+			dependency[0] = structUtils.stringifyIdent(dependency[1]);
+		}
+	}
+
+	return dependencies;
 }

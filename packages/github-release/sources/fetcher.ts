@@ -12,7 +12,6 @@ import {PortablePath, ppath, xfs, JailFS} from "@yarnpkg/fslib";
 import {ZipFS} from "@yarnpkg/libzip";
 
 import * as githubHttpUtils from "./github-http-utils.js";
-import {extractAssetDependencies} from "./resolver.js";
 import {PROTOCOL, PROTOCOL_INTERNAL} from "./types.js";
 
 const bin = `\
@@ -122,7 +121,7 @@ export class GitHubReleaseFetcher implements Fetcher {
 			locator,
 			parseInt(id as string),
 			range.selector,
-			{project: opts.project, cache: opts.cache},
+			opts,
 		);
 
 		const tmpFolder = await xfs.mktempPromise();
@@ -131,8 +130,6 @@ export class GitHubReleaseFetcher implements Fetcher {
 		const prefixPath = structUtils.getIdentVendorPath(locator);
 		const pkgName = structUtils.stringifyIdent(locator);
 
-		const binaries = [binary ?? locator.name].flat();
-
 		await packageFs.mkdirPromise(prefixPath, {recursive: true});
 		await packageFs.writeJsonPromise(
 			`${prefixPath}/package.json` as PortablePath,
@@ -140,18 +137,17 @@ export class GitHubReleaseFetcher implements Fetcher {
 				name: pkgName,
 				type: "module",
 				bin: Object.fromEntries(
-					binaries.map((name, index) => [
-						ppath.basename(name as PortablePath),
-						`./bin-${index}.js`,
-					]),
+					[binary ?? locator.name]
+						.flat()
+						.map((name, index) => [
+							ppath.basename(name as PortablePath),
+							`./bin-${index}.js`,
+						]),
 				),
 				optionalDependencies: Object.fromEntries(
-					extractAssetDependencies(
-						locator,
-						release,
-						binaries,
-						range.params,
-					).map(([name, descriptor]) => [name, descriptor.range]),
+					githubHttpUtils
+						.extractAssetDependencies(locator, release, range.params)
+						.map(([name, descriptor]) => [name, descriptor.range]),
 				),
 			},
 		);
@@ -168,6 +164,9 @@ export class GitHubReleaseFetcher implements Fetcher {
 		return {
 			packageFs,
 			prefixPath,
+			// No checksums, otherwise every time the bin.js script changes
+			// this would cause invalid checksums
+			checksum: null,
 		};
 	}
 }
@@ -290,9 +289,9 @@ export class GitHubReleaseAssetFetcher implements Fetcher {
 				bin: Object.fromEntries(
 					[binary!]
 						.flat()
-						.map((binary) => [
-							ppath.basename(binary as PortablePath),
-							`.${ppath.resolve(PortablePath.root, binary)}${extension}`,
+						.map((b) => [
+							ppath.basename(b as PortablePath),
+							`.${ppath.resolve(PortablePath.root, b)}${extension}`,
 						]),
 				),
 
