@@ -702,6 +702,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yarnpkg/plugin-github-release@workspace:packages/github-release":
+  version: 0.0.0-use.local
+  resolution: "@yarnpkg/plugin-github-release@workspace:packages/github-release"
+  dependencies:
+    "@yarnpkg/builder": "npm:^4.2.4"
+    "@yarnpkg/core": "npm:^4.9.1"
+    "@yarnpkg/fslib": "npm:^3.1.5"
+    "@yarnpkg/libzip": "npm:^3.2.2"
+  languageName: unknown
+  linkType: soft
+
 "@yarnpkg/plugin-github@npm:^3.0.3":
   version: 3.0.3
   resolution: "@yarnpkg/plugin-github@npm:3.0.3"

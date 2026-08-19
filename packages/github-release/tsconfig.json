@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"verbatimModuleSyntax": true
+	},
+	"files": ["sources/index.ts"],
+	"include": ["sources/**/*.ts"]
+}
