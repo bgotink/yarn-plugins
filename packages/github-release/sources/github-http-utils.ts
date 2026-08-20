@@ -82,7 +82,7 @@ async function loadRepoReleaseMetadataFromNetwork(
 				accept: "application/vnd.github+json",
 				"X-GitHub-Api-Version": "2026-03-10",
 			};
-			const auth = await getAuthenticationHeader(configuration);
+			const auth = getAuthenticationHeader(configuration);
 			if (auth) {
 				headers["authorization"] = auth;
 			}
@@ -293,9 +293,9 @@ function getMetadataFolder(configuration: Configuration) {
 	);
 }
 
-async function getAuthenticationHeader(configuration: Configuration) {
-	// TODO support github token
-	return null;
+function getAuthenticationHeader(configuration: Configuration) {
+	const token = configuration.get('githubRelease').get('token');
+	return token ? `Bearer ${token}` : null;
 }
 
 type Libc = "glibc" | "musl";
